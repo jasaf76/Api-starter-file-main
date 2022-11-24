@@ -1,0 +1,22 @@
+{
+  "name": "general-api",
+  "version": "1.0.0",
+  "description": "this is a general api, then  converted to nft markeplace api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasaf76/Api-starter-file-main.git"
+  },
+  "author": "Jose antonio aparicio gallego",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasaf76/Api-starter-file-main/issues"
+  },
+  "homepage": "https://github.com/jasaf76/Api-starter-file-main#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
