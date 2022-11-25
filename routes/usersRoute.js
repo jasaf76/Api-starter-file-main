@@ -1,41 +1,10 @@
 const express = require("express");
-
-///---USERS
-const getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "Internal Server Error",
-  });
-};
-const createUsers = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "Internal Server Error",
-  });
-};
-const getSingleUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "Internal Server Error",
-  });
-};
-const updateUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "Internal Server Error",
-  });
-};
-const deleteUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "Internal Server Error",
-  });
-};
+const userControllers = require("./../controllers/userControllers");
 
 const router = express.Router();
 
 //ROUTER UsenftsRouter
-router.route("/").get(getAllUsers).post(createUsers);
-router.route("/:id").get(getSingleUser).patch(updateUser).delete(deleteUser);
+router.route("/").get(userControllers.getAllUsers).post(userControllers.createUsers);
+router.route("/:id").get(userControllers.getSingleUser).patch(userControllers.updateUser).delete(userControllers.deleteUser);
 
 module.exports = router;

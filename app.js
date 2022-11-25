@@ -298,8 +298,7 @@ app.use(morgan("dev"));
 //Custom Middleware
 
 app.use((req, res, next) => {
-  // res.header("Access-Control-Allow-Origin", "*");
-  // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+console.log('salio bien la cosa')
   next();
 });
 app.use((req, res, next) => {
@@ -311,7 +310,4 @@ app.use((req, res, next) => {
 app.use("/api/v1/nfts", nftsRouter);
 app.use("/api/v1/users", usersRouter);
 
-const port = 3003;
-app.listen(port, () => {
-  console.log(`Server läuft in Port ${port}`);
-});
+module.exports = app;
