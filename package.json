@@ -4,7 +4,8 @@
   "description": "this is a general api, then  converted to nft markeplace api",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start:prod":"NODE_ENV=production nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/jasaf76/Api-starter-file-main#readme",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "morgan": "^1.10.0"
   }
