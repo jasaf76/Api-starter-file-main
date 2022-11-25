@@ -298,7 +298,7 @@ app.use(morgan("dev"));
 //Custom Middleware
 
 app.use((req, res, next) => {
-console.log('salio bien la cosa')
+console.log("salio bien la cosa 🐶");
   next();
 });
 app.use((req, res, next) => {
@@ -308,6 +308,6 @@ app.use((req, res, next) => {
 //ROUTER NFTs
 
 app.use("/api/v1/nfts", nftsRouter);
-app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/users", usersRouter   );
 
 module.exports = app;

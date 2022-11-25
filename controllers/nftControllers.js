@@ -1,9 +1,29 @@
-
 const fs = require("fs");
 //Get request
 const nfts = JSON.parse(
   fs.readFileSync(`${__dirname}/../nft-data/data/nft-simple.json`, "utf-8")
 );
+
+exports.checkId = (req, res, next, value) => {
+  console.log(`ID: ${value}`);
+  if (req.params.id * 1 > nfts.length) {
+    return res.status(404).json({
+      status: "Failed to find",
+      message: "Invalid id",
+    });
+  }
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Missing name and price",
+    });
+  }
+  next();
+};
 
 exports.getAllNfts = (req, res) => {
   console.log(req.requestTime);
@@ -78,13 +98,6 @@ exports.updateNFT = (req, res) => {
 
 // Delet Method
 exports.deleteNFT = (req, res) => {
-  if (req.params.id * 1 > nfts.length) {
-    return res.status(404).json({
-      status: "Failed to find",
-      message: "Invalid id",
-    });
-  }
-
   res.status(204).json({
     status: "OK",
     data: null,
