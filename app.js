@@ -295,8 +295,11 @@ const usersRouter = require('./routes/usersRoute')
 const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
-//Custom Middleware
 
+//SERVING TEMPLATE DEMO
+app.use(express.static(`${__dirname}/nft-data/img`));
+
+//Custom Middleware
 app.use((req, res, next) => {
 console.log("salio bien la cosa 🐶");
   next();
