@@ -1,6 +1,6 @@
-const dotenv = require('dotenv');
-const app = require('./app');
-const mongoose = require('mongoose');
+const dotenv = require("dotenv");
+const app = require("./app");
+const mongoose = require("mongoose");
 // console.log(app.get("env"))
 
 dotenv.config({ path: "./config.env" });
@@ -8,7 +8,7 @@ dotenv.config({ path: "./config.env" });
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
   process.env.DATABASE_PASSWORD
-)
+);
 mongoose
   .connect(DB, {
     useCreateIndex: true,
@@ -21,7 +21,21 @@ mongoose
   });
 
 
-//console.log(process.env)
+
+
+// const testNFT = new NFT({
+//   name: 'NFT5',
+//   rating: 1.3,
+//   price: 180,
+// });
+
+// testNFT.save().then((docNFT) => {
+//   console.log(docNFT);
+  
+// }).catch (error => {
+//   console.log("ERROR: " + error.message)
+// })
+// //console.log(process.env)
 const port = process.env.PORT || 3003;
 app.listen(port, () => {
   console.log(`Server läuft in Port ${port}`);
