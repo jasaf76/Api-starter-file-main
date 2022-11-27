@@ -35,24 +35,24 @@ const nftSchema = new mongoose.Schema({
   priceDiscount: Number,
   summary: {
     type: String,
-    required:[true, "A NFT muss provide the summary"],
+    required: [true, "A NFT muss provide the summary"],
     trim: true,
   },
-  Description: {
+  description: {
     type: String,
     trim: true,
   },
   imageCover: {
     type: String,
     trim: true,
-    required:[true, "A NFT muss provide the image cover"]
+    required: [true, "A NFT muss provide the image cover"],
   },
   images: [String],
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
-  startDates:[Date],
+  startDates: [Date],
 });
 
 const NFT = mongoose.model("NFT", nftSchema);

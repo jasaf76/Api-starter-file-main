@@ -4,6 +4,7 @@ const NFT = require("./../models/nftModel");
 
 exports.getAllNfts = async (req, res) => {
   // console.log(req.requestTime);
+  console.log(req.query)
 
   try {
     const nfts = await NFT.find();
