@@ -38,6 +38,17 @@ exports.getAllNfts = async (req, res) => {
     } else {
       query = query.select("-__v");
     }
+    //PAGINATION SECTION
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+     if (req.query.page) {
+       const newNFTs = await NFT.countDocuments();
+       if (skip >= newNFTs) throw new Error("Diese Seite existiert nicht");
+     }
     const nfts = await query;
     //SEND QUERY
     res.status(200).json({
