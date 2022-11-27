@@ -5,38 +5,46 @@ const NFT = require("./../models/nftModel");
 exports.getAllNfts = async (req, res) => {
   // console.log(req.requestTime);
 
-  // build query
+  // BUILD QUERY
   try {
-    console.log(req.query)
-    // const nfts = await NFT.find().where('duration').equals(5).where('difficulty').equals('easy');	
+    console.log(req.query);
+    // const nfts = await NFT.find().where('duration').equals(5).where('difficulty').equals('easy');
     const queryObj = { ...req.query };
     const excludedFields = ["page", "sort", "limit", "fields"];
-    excludedFields.forEach(el => delete queryObj[el])
+    excludedFields.forEach((el) => delete queryObj[el]);
 
     //console.log(req.query)
-    //execute query ADVANCED Filtering
-    
-   let queryStr = JSON.stringify(queryObj);
-   queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
- 
-    //console.log(JSON.parse(queryStr));   
+    //ADVANCED QUERY FILTERING
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    //console.log(JSON.parse(queryStr));
     let query = NFT.find(JSON.parse(queryStr));
-     //sorting method
+    //SORTING METHOD
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       console.log(sortBy);
-      query = query.sort(sortBy)
+      query = query.sort(sortBy);
     } else {
-      query = query.sort("-createdAt")
-     }
+      query = query.sort("-createdAt");
+    }
     //const query = NFT.find(req.query, queryObj)
+
+    //FIELDS LIMITING
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      query = query.select(fields);
+    } else {
+      query = query.select("-__v");
+    }
     const nfts = await query;
-    //send query
+    //SEND QUERY
     res.status(200).json({
       status: "OK",
       results: nfts.length,
       data: {
-       nfts,
+        nfts,
       },
     });
   } catch (error) {
