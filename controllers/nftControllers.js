@@ -2,6 +2,14 @@
 
 const NFT = require("./../models/nftModel");
 
+exports.aliasTopNFTs = (req, res, next) => {
+  req.query.limit = "5"
+  req.query.sort = "-ratingsAverage,price"
+  req.query.fields = "name,price,ratingsAverage, difficulty"
+  next(); 
+
+}
+
 exports.getAllNfts = async (req, res) => {
   // console.log(req.requestTime);
 
@@ -14,7 +22,7 @@ exports.getAllNfts = async (req, res) => {
     excludedFields.forEach((el) => delete queryObj[el]);
 
     //console.log(req.query)
-    //ADVANCED QUERY FILTERING
+    //ADVANCED QUERY FILTERING 
 
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
