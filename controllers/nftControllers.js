@@ -1,57 +1,7 @@
 ///-----Part 3
 
 const NFT = require("./../models/nftModel");
-const APIFeatures = require("./../utils/apiFeatures")
-// class APIFeatures {
-//   constructor(query, queryString) {
-//     this.query = query;
-//     this.queryString = queryString;
-//   }
-
-//   filter() {
-//     //BUILD QUERY
-//     const queryObj = { ...this.queryString };
-//     const excludedFields = ["page", "sort", "limit", "fields"];
-//     excludedFields.forEach((el) => delete queryObj[el]);
-
-//     //ADVANCE FILTERING QUERY
-//     let queryStr = JSON.stringify(queryObj);
-//     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-//     this.query = this.query.find(JSON.parse(queryStr));
-//     return this;
-//   }
-
-//   sort() {
-//     if (this.queryString.sort) {
-//       const sortBy = this.queryString.sort.split(",").join(" ");
-//       console.log(sortBy);
-//       this.query = this.query.sort(sortBy);
-//     } else {
-//       this.query = this.query.sort("-createdAt");
-//     }
-//     return this;
-//   }
-
-//   limitFields() {
-//     if (this.queryString.fields) {
-//       const fields = this.queryString.fields.split(",").join(" ");
-//       this.query = this.query.select(fields);
-//     } else {
-//       this.query = this.query.select("-__v");
-//     }
-//     return this;
-//   }
-
-//   pagination() {
-//     const page = this.queryString.page * 1 || 1;
-//     const limit = this.queryString.limit * 1 || 10;
-//     const skip = (page - 1) * limit;
-
-//     this.query = this.query.skip(skip).limit(limit);
-
-//     return this;
-//   }
-// }
+const APIFeatures = require("./../utils/apiFeatures");
 
 exports.aliasTopNFTs = (req, res, next) => {
   req.query.limit = "5";
@@ -158,6 +108,51 @@ exports.deleteNFT = async (req, res) => {
   } catch (error) {
     res.status(404).json({
       status: "Invalid data delete for NFT",
+      message: error,
+    });
+  }
+};
+
+//Aggregation PIPELINE
+
+exports.getNFTsStats = async (req, res) => {
+  try {
+    const stats = await NFT.aggregate([
+      {
+        $match: {
+          ratingsAverage: { $gte: 4.5 },
+        },
+      },
+      {
+        $group: {
+          _id: { $toUpper: "$difficulty" },
+          // _id:"$ratingsAverage",
+          numNFT: { $sum: 1 },
+          numRatings: { $sum: "$ratingsQuantity" },
+          avgRating: { $avg: "$ratingsAverage" },
+          avgPrice: { $avg: "$price" },
+          minPrice: { $min: "$price" },
+          maxPrice: { $max: "$price" },
+        },
+      },
+      {
+        $sort: { avgRating: 1 },
+      },
+      {
+        $match: {
+          _id: { $ne: " EASY" },
+        },
+      },
+    ]);
+    res.status(200).json({
+      status: "OK",
+      data: {
+        stats,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "Invalid data send for NFT",
       message: error,
     });
   }

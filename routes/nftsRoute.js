@@ -10,7 +10,8 @@ const NFT = require("./../models/nftModel")
 router
   .route("/top-5-nfts")
   .get(nftControllers.aliasTopNFTs, nftControllers.getAllNfts);
-
+// stats Route
+router.route("/nfts-stats").get(nftControllers.getNFTsStats);
 // ROUTER NFTs
 router
   .route("/")
