@@ -6,10 +6,10 @@ const router = express.Router();
 //router.param("id", nftControllers.checkId);
 const NFT = require("./../models/nftModel")
 
-//TOP % NFTs by PRICE
+///TOP 5 NFTs BY PRICE
 router
   .route("/top-5-nfts")
-  .get(nftControllers.aliasTopNFTs, nftControllers.getAllNfts); 
+  .get(nftControllers.aliasTopNFTs, nftControllers.getAllNfts);
 
 // ROUTER NFTs
 router
