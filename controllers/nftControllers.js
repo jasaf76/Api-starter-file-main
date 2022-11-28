@@ -157,3 +157,56 @@ exports.getNFTsStats = async (req, res) => {
     });
   }
 };
+
+//CALCULATING NUMBER OF NFTS CREATE IN THE MONTH OR MONTHLY PLAN
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1;
+    const plan = await NFT.aggregate([
+      {
+        $unwind: "$startDates",
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-02-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: "$startDates" },
+          numNFTStarts: { $sum: 1 },
+          nfts: { $push: "$name" },
+        },
+      },
+      {
+        $addFields: {
+          month: "$_id",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: { numNFTStarts: -1, },
+      },
+      {
+        $limit:10,
+      }
+    ]);
+    res.status(200).json({
+      status: "OK",
+      data: plan,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "Invalid data send for NFT",
+      message: error,
+    });
+  }
+};
