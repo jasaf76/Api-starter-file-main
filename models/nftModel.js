@@ -57,6 +57,10 @@ const nftSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretNfts: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -86,6 +90,27 @@ nftSchema.pre("save", function (next) {
 //   next();
 // });
 
+//QUERY middleware
+///---PRE
+nftSchema.pre(/^find/, function (next) {
+  this.find({ secretNfts: { $ne: true } });
+  this.start = Date.now();
+
+  next();
+});
+
+// nftSchema.pre("findOne", function (next) {
+//   this.find({ secretNfts: { $ne: true } });
+//   next();
+// });
+
+//QUERY middleware
+///---POST
+nftSchema.post(/^find/, function (doc, next) {
+  console.log(`QUERY TOOK TIME: ${Date.now() - this.start} times`);
+ // console.log(doc);
+  next();
+});
 const NFT = mongoose.model("NFT", nftSchema);
 
 module.exports = NFT;
