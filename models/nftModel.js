@@ -108,7 +108,13 @@ nftSchema.pre(/^find/, function (next) {
 ///---POST
 nftSchema.post(/^find/, function (doc, next) {
   console.log(`QUERY TOOK TIME: ${Date.now() - this.start} times`);
- // console.log(doc);
+  // console.log(doc);
+  next();
+});
+///--AGGREGATE MIDDLEWARE
+nftSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { secretNfts: { $ne: true } } });
+  //console.log(this.pipeline());
   next();
 });
 const NFT = mongoose.model("NFT", nftSchema);
