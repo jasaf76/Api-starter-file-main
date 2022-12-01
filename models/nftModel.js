@@ -8,24 +8,31 @@ const nftSchema = new mongoose.Schema(
       required: [true, "A NFT muss eine Haben"],
       unique: true,
       trim: true,
+      maxlength: [40, "NFT Name darf nicht mehr als 40 Zeichen haben"],
+      minlength: [6, "Nft Name muss mindestens 6 Zeichen haben"],
     },
     slug: String,
     duration: {
       type: String,
-      required: [true, "Aktuelle Dauer muss eine Haben"],
+      required: [true, "Aktuelle Dauer muss eine Haben "],
     },
     maxGroupSize: {
       type: Number,
       required: [true, "Aktuelle Größe muss eine Gruppe Haben"],
     },
-
     difficulty: {
       type: String,
       required: [true, "Aktuelle Dauer muss eine Gruppe Haben"],
+      enum: {
+        values: ["easy", "medium", "difficulty"],
+        message: "Die Schwierigkeit ist entweder: leicht, mittel oder schwer.",
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 0,
+      min: [1, "mindestens 1 EXTERNE vergeben"],
+      max: [5, "maximal 5 EXTERNE vergeben"],
     },
     ratingsQuantity: {
       type: Number,
@@ -35,7 +42,15 @@ const nftSchema = new mongoose.Schema(
       type: Number,
       required: [true, "A NFT muss ein Preis haben"],
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return val < this.price;
+        },
+        message: "Rabattpreis sollte({VALUE}) unter dem regulären Preis liegen.",
+      },
+    },
     summary: {
       type: String,
       required: [true, "A NFT muss provide the summary"],
