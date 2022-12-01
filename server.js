@@ -19,7 +19,7 @@ mongoose
     // console.log(con.connection);
     console.log("DB Connection Successfully");
   });
-
+console.log(process.env.NODE_ENV)
 
 
 
