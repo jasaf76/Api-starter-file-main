@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+const validator = require("validator");
 
 const nftSchema = new mongoose.Schema(
   {
@@ -10,6 +11,8 @@ const nftSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, "NFT Name darf nicht mehr als 40 Zeichen haben"],
       minlength: [6, "Nft Name muss mindestens 6 Zeichen haben"],
+     // validate: [validator.isAlpha,"NFT Name KANN NUR Zeichen HABEn, keine Number"],
+
     },
     slug: String,
     duration: {
