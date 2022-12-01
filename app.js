@@ -282,22 +282,22 @@
 //   console.log(`Server läuft in Port ${port}`);
 // });
 
-
 ///PART 4
 
 const express = require("express");
 const morgan = require("morgan");
 
-const nftsRouter = require('./routes/nftsRoute')
+const nftsRouter = require("./routes/nftsRoute");
 
-const usersRouter = require('./routes/usersRoute')
+const usersRouter = require("./routes/usersRoute");
 
 const app = express();
 app.use(express.json());
 
-// if (process.env.NODE_ENV === 'development') { 
+// if (process.env.NODE_ENV === 'development') {
 //   app.use(morgan("dev"));
 // }
+
 
 app.use(morgan("dev"));
 //SERVING TEMPLATE DEMO
@@ -310,7 +310,7 @@ app.use((req, res, next) => {
   //  res.header("Access-Control-Allow-Methods", "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH");
   //  res.header("Allow", "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH");
 
-console.log("salio bien la cosa 🐶");
+  console.log("salio bien la cosa 🐶");
   next();
 });
 app.use((req, res, next) => {
@@ -320,6 +320,13 @@ app.use((req, res, next) => {
 //ROUTER NFTs
 
 app.use("/api/v1/nfts", nftsRouter);
-app.use("/api/v1/users", usersRouter   );
+app.use("/api/v1/users", usersRouter);
+
+app.all("*", (req, res) => {
+  res.status(404).json({
+    status: "fail",
+    message: `Es kann nicht  ${req.originalUrl} gefunden werden von dieser Server`,
+  });
+});
 
 module.exports = app;
