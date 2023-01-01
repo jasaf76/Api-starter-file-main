@@ -1,7 +1,13 @@
 const dotenv = require("dotenv");
-const app = require("./app");
 const mongoose = require("mongoose");
-// console.log(app.get("env"))
+const app = require("./app");
+
+process.on("uncaughtException", (err) => {
+  console.log("uncaughtException Shutting down application");
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 
 dotenv.config({ path: "./config.env" });
 
@@ -19,24 +25,20 @@ mongoose
     // console.log(con.connection);
     console.log("DB Connection Successfully");
   });
-console.log(process.env.NODE_ENV)
+// .catch((err) => console.log("ERROR"));
 
+console.log(process.env.NODE_ENV);
 
-
-// const testNFT = new NFT({
-//   name: 'NFT5',
-//   rating: 1.3,
-//   price: 180,
-// });
-
-// testNFT.save().then((docNFT) => {
-//   console.log(docNFT);
-  
-// }).catch (error => {
-//   console.log("ERROR: " + error.message)
-// })
 // //console.log(process.env)
-const port = process.env.PORT || 3003;
-app.listen(port, () => {
-  console.log(`Server läuft in Port ${port}`);
+const port = process.env.PORT || 3014;
+const server = app.listen(port, () => {
+  console.log(`Server läuft in Port ${port}...`);
 });
+process.on("unhandledRejection", (err) => {
+  console.log(err.name, err.message);
+  console.log("unhandelRejection Shutting down application");
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
