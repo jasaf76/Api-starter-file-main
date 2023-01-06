@@ -11,11 +11,12 @@ const usersRouter = require("./routes/usersRoute");
 
 const app = express();
 app.use(express.json());
-app.use(fileUpload({
+app.use(
+  fileUpload({
     useTempFiles: true,
     tempFileDir: "./tmp",
-
-}));
+  })
+);
 // if (process.env.NODE_ENV === 'development') {
 //   app.use(morgan("dev"));
 // }
@@ -26,12 +27,20 @@ app.use(express.static(`${__dirname}/nft-data/img`));
 
 //Custom Middleware
 app.use((req, res, next) => {
-  //  res.header("Access-Control-Allow-Origin", "*");
-  //  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method");
-  //  res.header("Access-Control-Allow-Methods", "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH");
-  //  res.header("Allow", "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH");
+  req.requestTime = new Date().toISOString();
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH"
+  );
+  res.header("Allow", "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH");
 
   console.log("salio bien la cosa 🐶");
+  //console.log(req.headers);
   next();
 });
 app.use((req, res, next) => {
