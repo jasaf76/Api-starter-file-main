@@ -27,7 +27,7 @@ const nftSchema = new mongoose.Schema(
       type: String,
       required: [true, "Aktuelle Dauer muss eine Gruppe Haben"],
       enum: {
-        values: ["easy", "medium", "difficulty"],
+        values: ["easy", "medium", "heavy"],
         message: "Die Schwierigkeit ist entweder: leicht, mittel oder schwer.",
       },
     },
