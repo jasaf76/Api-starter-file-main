@@ -29,7 +29,7 @@ mongoose
 
 console.log(process.env.NODE_ENV);
 
-// //console.log(process.env)
+ //console.log(process.env)
 const port = process.env.PORT || 3014;
 const server = app.listen(port, () => {
   console.log(`Server läuft in Port ${port}...`);

@@ -12,6 +12,30 @@ const signToken = (id) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    //secure: true,
+    httpOnly: true,
+  };
+
+  // if((process.env.NODE_ENV = "production")) cookieOptions.secure = true;
+
+  res.cookie("jwt", token, cookieOptions);
+  user.password = undefined;
+
+  res.status(statusCode).json({
+    status: "Success",
+    token,
+    data: {
+      user,
+    },
+  });
+};
 
 //SIGNUP
 exports.signup = catchAsync(async (req, res, next) => {
@@ -23,16 +47,17 @@ exports.signup = catchAsync(async (req, res, next) => {
   //   password: req.body.password,
   //   passwordConfirmed: req.body.passwordConfirmed,
   // });
+  createSendToken(newUser, 201, res);
 
-  const token = signToken(newUser._id);
+  // const token = signToken(newUser._id);
 
-  res.status(201).json({
-    status: "Success",
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  // res.status(201).json({
+  //   status: "Success",
+  //   token,
+  //   data: {
+  //     user: newUser,
+  //   },
+  // });
 });
 //LOGIN USER
 
@@ -48,11 +73,12 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
   }
-  const token = signToken(user.id);
-  res.status(200).json({
-    status: "Success",
-    token,
-  });
+  createSendToken(user, 200, res);
+  // const token = signToken(user.id);
+  // res.status(200).json({
+  //   status: "Success",
+  //   token,
+  // });
 });
 
 //PROTECT ROUTES
@@ -164,7 +190,7 @@ exports.resetPassword = async (req, res, next) => {
     .digest("hex");
   const user = await User.findOne({
     passwordResetToken: hashedToken,
-    passwordResetExpires: {$gt: Date.now()},
+    passwordResetExpires: { $gt: Date.now() },
   });
   //  2)if token has not expired and there is user, set the new password
   if (!user) {
@@ -175,13 +201,31 @@ exports.resetPassword = async (req, res, next) => {
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   //3)update changedPasswordAt property for the user
-  
+
   await user.save();
   //4)Log the user in, send JWT
-  const token = signToken(user.id);
-  res.status(200).json({
-    status: "Success",
-    token,
-    message:"Passwort erfolgreich geändert",
-  });
+  createSendToken(user, 200, res);
+  // const token = signToken(user.id);
+  // res.status(200).json({
+  //   status: "Success",
+  //   token,
+  //   message: "Passwort erfolgreich geändert",
+  // });
 };
+//UPDATE PASSWORD
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //1)get user based on the token
+  const user = await User.findById(req.user.id).select("+password");
+  //  2)check if posted current password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError("Die Passwörter stimmen nicht überein", 400));
+  }
+  //3)if so, update password
+  user.password = req.body.password;
+  user.passwordConfirmed = req.body.passwordConfirmed;
+  await user.save();
+  //4)Log the user in, send JWT
+  createSendToken(user, 200, res);
+
+});
