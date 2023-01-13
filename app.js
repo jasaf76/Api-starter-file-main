@@ -66,17 +66,6 @@ app.use(express.static(`${__dirname}/nft-data/img`));
 //Custom Middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  // res.header("Access-Control-Allow-Origin", "*");
-  // res.header(
-  //    "Access-Control-Allow-Headers",
-  // //   "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
-  // );
-  // // res.header(
-  // //   "Access-Control-Allow-Methods",
-  // //   "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH"
-  // // );
-  // res.header("Allow", "GET, POST, PUT,OPTIONS,DELETE,UPDATE,PATCH");
-
   console.log("salio bien la cosa 🐶");
   //console.log(req.headers);
   next();
